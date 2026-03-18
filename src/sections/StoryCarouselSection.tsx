@@ -22,6 +22,33 @@ export default function StoryCarouselSection() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(2);
 
+  const updateCardPositions = (immediate = false) => {
+    const cards = gsap.utils.toArray<HTMLElement>('.carousel-card');
+    if (!cards.length) return;
+
+    cards.forEach((card, index) => {
+      const diff = index - activeIndex;
+      
+      // Horizontal slider with scaling and opacity
+      const translateX = diff * 340; // Spacing between cards
+      const scale = index === activeIndex ? 1.15 : 0.85;
+      const opacity = index === activeIndex ? 1 : 0.45;
+      const zIndex = index === activeIndex ? 20 : 10 - Math.abs(diff);
+
+      gsap.to(card, {
+        x: translateX,
+        scale: scale,
+        opacity: opacity,
+        duration: immediate ? 0 : 0.8,
+        ease: 'power3.out',
+        overwrite: true,
+        force3D: true,
+      });
+      
+      card.style.zIndex = zIndex.toString();
+    });
+  };
+
   useGSAP(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -40,12 +67,12 @@ export default function StoryCarouselSection() {
             Math.floor(progress * carouselItems.length),
             carouselItems.length - 1
           );
-          setActiveIndex(current => {
-            if (newIndex !== current) return newIndex;
-            return current;
-          });
+          
+          if (newIndex !== activeIndex) {
+            setActiveIndex(newIndex);
+          }
         }
-      },
+      }
     });
 
     if (headlineRef.current) {
@@ -77,40 +104,18 @@ export default function StoryCarouselSection() {
       force3D: true,
     });
 
-    // 3. Initial Card Positioning
+    // 3. Initial position
     updateCardPositions(true);
 
+    return () => {
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
   }, { scope: sectionRef });
 
-  // 4. Handle Active Index Change (GSAP transition)
+  // 3. Update positions when active index changes
   useGSAP(() => {
     updateCardPositions();
   }, { dependencies: [activeIndex], scope: sectionRef });
-
-  function updateCardPositions(immediate = false) {
-    const cards = gsap.utils.toArray<HTMLElement>('.carousel-card');
-    cards.forEach((card, index) => {
-      const diff = index - activeIndex;
-      
-      // Horizontal slider with scaling and opacity
-      const translateX = diff * 340; // Spacing between cards
-      const scale = index === activeIndex ? 1.15 : 0.85;
-      const opacity = index === activeIndex ? 1 : 0.45;
-      const zIndex = index === activeIndex ? 20 : 10 - Math.abs(diff);
-
-      gsap.to(card, {
-        x: translateX,
-        scale: scale,
-        opacity: opacity,
-        duration: immediate ? 0 : 0.8,
-        ease: 'power3.out',
-        overwrite: true,
-        force3D: true,
-      });
-      
-      card.style.zIndex = zIndex.toString();
-    });
-  }
 
   const navigate = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {

@@ -23,7 +23,7 @@ export default function CreatorsSection() {
   useGSAP(() => {
     if (!sectionRef.current) return;
 
-    // Optimized staggered animation for all creator cards
+    // Optimized staggered animation for all creator cards (forced refresh)
     const cards = cardRefs.current.filter(Boolean);
     if (cards.length > 0) {
       gsap.fromTo(
