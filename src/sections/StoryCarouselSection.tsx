@@ -26,32 +26,39 @@ export default function StoryCarouselSection() {
     const section = sectionRef.current;
     if (!section) return;
 
-    // 1. Entrance and Scroll Pinned Timeline
-    const mainTl = gsap.timeline({
+    // 1. Scroll-driven carousel navigation
+    const carouselTl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        end: '+=130%',
+        end: '+=200%',
         pin: true,
-        scrub: 0.6,
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const newIndex = Math.min(
+            Math.floor(progress * carouselItems.length),
+            carouselItems.length - 1
+          );
+          setActiveIndex(current => {
+            if (newIndex !== current) return newIndex;
+            return current;
+          });
+        }
       },
     });
 
     if (headlineRef.current) {
-      mainTl.fromTo(
+      carouselTl.fromTo(
         headlineRef.current,
         { y: 0, opacity: 1 },
-        { y: '-10vh', opacity: 0, ease: 'power2.in' },
-        0.7
-      );
-    }
-
-    if (carouselRef.current) {
-      mainTl.fromTo(
-        carouselRef.current,
-        { rotateY: 0, x: 0, opacity: 1 },
-        { rotateY: -35, x: '-25vw', opacity: 0, ease: 'power2.in' },
-        0.7
+        { y: -30, opacity: 0, scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'top -20%',
+          scrub: true
+        }},
+        0
       );
     }
 
@@ -84,29 +91,24 @@ export default function StoryCarouselSection() {
     const cards = gsap.utils.toArray<HTMLElement>('.carousel-card');
     cards.forEach((card, index) => {
       const diff = index - activeIndex;
-      const normalizedDiff = ((diff + carouselItems.length + Math.floor(carouselItems.length / 2)) % carouselItems.length) - Math.floor(carouselItems.length / 2);
       
-      const rotateY = normalizedDiff * 40;
-      const translateX = normalizedDiff * 320;
-      const translateZ = Math.abs(normalizedDiff) * -220;
-      const scale = 1 - Math.abs(normalizedDiff) * 0.18;
-      const opacity = 1 - Math.abs(normalizedDiff) * 0.4;
-      const blur = Math.abs(normalizedDiff) * 2; // Reduced from 3 to 2
+      // Horizontal slider with scaling and opacity
+      const translateX = diff * 340; // Spacing between cards
+      const scale = index === activeIndex ? 1.15 : 0.85;
+      const opacity = index === activeIndex ? 1 : 0.45;
+      const zIndex = index === activeIndex ? 20 : 10 - Math.abs(diff);
 
       gsap.to(card, {
         x: translateX,
-        z: translateZ,
-        rotateY: rotateY,
         scale: scale,
-        opacity: Math.max(opacity, 0.25),
-        filter: blur > 0 ? `blur(${blur}px)` : 'none',
-        duration: immediate ? 0 : 0.7,
-        ease: 'power2.out',
+        opacity: opacity,
+        duration: immediate ? 0 : 0.8,
+        ease: 'power3.out',
         overwrite: true,
         force3D: true,
       });
       
-      card.style.zIndex = (10 - Math.abs(normalizedDiff)).toString();
+      card.style.zIndex = zIndex.toString();
     });
   }
 
@@ -134,27 +136,28 @@ export default function StoryCarouselSection() {
         <p className="font-body text-luxury-gray mt-4 text-lg">The faces of our movement.</p>
       </div>
 
-      <div ref={carouselRef} className="relative w-full h-[550px] flex items-center justify-center" style={{ perspective: '1200px', willChange: 'transform, opacity' }}>
-        <div className="relative" style={{ transformStyle: 'preserve-3d' }}>
+      <div ref={carouselRef} className="relative w-full h-[550px] flex items-center justify-center pt-20" style={{ willChange: 'transform, opacity' }}>
+        <div className="relative w-full max-w-[400px]" style={{ perspective: '1000px' }}>
           {carouselItems.map((item, index) => (
             <div
               key={item.id}
-              className="carousel-card absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[350px] cursor-pointer group"
-              style={{ willChange: 'transform, opacity, filter' }}
+              className="carousel-card absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[320px] cursor-pointer group"
+              style={{ 
+                willChange: 'transform, opacity',
+                transition: 'filter 0.5s ease',
+              }}
               onClick={() => setActiveIndex(index)}
             >
-              <div className="glass-card-strong overflow-hidden">
+              <div className={`glass-card-strong overflow-hidden ${index !== activeIndex ? 'grayscale-[0.5] blur-[1px]' : ''} transition-all duration-700`}>
                 <div className="aspect-[4/5] overflow-hidden relative">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-dark/70 via-luxury-dark/25 to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-dark/80 via-luxury-dark/20 to-transparent" />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <span className="font-mono text-xs text-luxury-purple uppercase tracking-widest">{item.subtitle}</span>
-                  <h3 className="font-display font-bold text-2xl text-white mt-1 group-hover:text-luxury-purple transition-colors duration-300">{item.title}</h3>
+                <div className="absolute bottom-0 left-0 right-0 p-6 pointer-events-none">
+                  <span className="font-mono text-[10px] text-luxury-purple uppercase tracking-widest">{item.subtitle}</span>
+                  <h3 className="font-display font-bold text-xl text-white mt-1">{item.title}</h3>
                 </div>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-luxury-purple/20" />
-                {index === activeIndex && <div className="absolute inset-0 rounded-2xl shadow-glow-lg pointer-events-none" />}
+                {index === activeIndex && <div className="absolute inset-0 border-2 border-luxury-purple/30 rounded-2xl pointer-events-none" />}
               </div>
             </div>
           ))}

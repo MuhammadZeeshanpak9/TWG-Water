@@ -1,64 +1,20 @@
-import { useRef, Suspense } from 'react';
+import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Canvas } from '@react-three/fiber';
 
 import LiquidBlob from '../components/LiquidBlob';
-import WaterBottle3D from '../components/WaterBottle3D';
-import FloatingParticles from '../components/FloatingParticles';
 import FloatingDroplets from '../components/FloatingDroplets';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Falling water drops component - simplified and batched
-function FallingWaterDrops() {
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    const drops = containerRef.current?.querySelectorAll('.water-drop');
-    if (!drops) return;
-
-    // Use a single stagger animation for all drops
-    gsap.to(drops, {
-      y: '120vh',
-      duration: 1.8,
-      repeat: -1,
-      stagger: {
-        amount: 3,
-        from: "random",
-        repeat: -1
-      },
-      ease: 'none',
-      force3D: true,
-    });
-  }, { scope: containerRef });
-
-  return (
-    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: 8 }).map((_, i) => ( // Reduced count from 12 to 8
-        <div
-          key={i}
-          className="water-drop absolute w-1.5 h-3 rounded-full"
-          style={{
-            left: `${48.5 + Math.random() * 3}%`,
-            top: '-20px',
-            background: 'linear-gradient(180deg, rgba(159,129,185,0.4) 0%, rgba(159,129,185,0.2) 100%)',
-            willChange: 'transform',
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
-  const bottleContainerRef = useRef<HTMLDivElement>(null);
-  const waterStreamRef = useRef<HTMLDivElement>(null);
   const leftFallingBottleRef = useRef<HTMLImageElement>(null);
   const rightFallingBottleRef = useRef<HTMLImageElement>(null);
 
@@ -66,26 +22,8 @@ export default function HeroSection() {
   useGSAP(() => {
     if (!sectionRef.current) return;
 
-    // 1. Mouse Parallax (Optimized to avoid re-renders)
-    const xSetter = gsap.quickSetter(bottleContainerRef.current, 'x', 'px');
-    const ySetter = gsap.quickSetter(bottleContainerRef.current, 'y', 'px');
+    // (Mouse parallax removed for cleaner background)
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 30;
-      const y = (e.clientY / window.innerHeight - 0.5) * 20;
-      
-      gsap.to({}, {
-        duration: 0.8,
-        onUpdate: () => {
-          xSetter(x);
-          ySetter(y);
-        },
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     // 2. Entrance Timeline
     const entranceTl = gsap.timeline({ delay: 0.2 });
@@ -109,12 +47,6 @@ export default function HeroSection() {
 
     entranceTl
       .fromTo(
-        bottleContainerRef.current,
-        { y: 150, opacity: 0, scale: 0.8 },
-        { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
-        0
-      )
-      .fromTo(
         subtextRef.current,
         { y: 40, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
@@ -125,12 +57,6 @@ export default function HeroSection() {
         { y: 30, opacity: 0, scale: 0.9 },
         { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' },
         0.9
-      )
-      .fromTo(
-        waterStreamRef.current,
-        { scaleY: 0, opacity: 0 },
-        { scaleY: 1, opacity: 1, duration: 1, ease: 'power2.out' },
-        0.6
       )
       .fromTo(
         leftFallingBottleRef.current,
@@ -160,12 +86,10 @@ export default function HeroSection() {
     scrollTl
       .to(headlineRef.current, { y: '-20vh', opacity: 0, scale: 1.1, ease: 'power2.in' }, 0.7)
       .to(subtextRef.current, { y: '-15vh', opacity: 0, ease: 'power2.in' }, 0.72)
-      .to(ctaRef.current, { y: '15vh', opacity: 0, ease: 'power2.in' }, 0.75)
-      .to(bottleContainerRef.current, { y: '30vh', opacity: 0, scale: 0.85, ease: 'power2.in' }, 0.7)
-      .to(waterStreamRef.current, { scaleY: 3, opacity: 0, ease: 'power2.in' }, 0.65);
+      .to(ctaRef.current, { y: '15vh', opacity: 0, ease: 'power2.in' }, 0.75);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      // (Mouse listener cleanup removed)
     };
   }, { scope: sectionRef });
 
@@ -181,19 +105,18 @@ export default function HeroSection() {
       ref={sectionRef}
       className="relative w-full h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* 2D Background Bottles (Falling from above) */}
       <img 
         ref={leftFallingBottleRef}
         src="/bottle.png" 
         alt="" 
-        className="absolute left-[8%] top-[12%] w-[380px] h-auto pointer-events-none z-0 brightness-110 opacity-0"
+        className="absolute left-[20%] top-[10%] w-[520px] sm:w-[580px] h-auto pointer-events-none z-0 brightness-110 opacity-0"
         style={{ translate: '0 0', willChange: 'transform, opacity' }}
       />
       <img 
         ref={rightFallingBottleRef}
         src="/bottle.png" 
         alt="" 
-        className="absolute right-[8%] top-[18%] w-[350px] h-auto pointer-events-none z-0 brightness-110 opacity-0 scale-x-[-1]"
+        className="absolute right-[20%] top-[15%] w-[480px] sm:w-[550px] h-auto pointer-events-none z-0 brightness-110 opacity-0 scale-x-[-1]"
         style={{ translate: '0 0', willChange: 'transform, opacity' }}
       />
 
@@ -222,41 +145,6 @@ export default function HeroSection() {
       {/* Floating droplets */}
       <FloatingDroplets count={20} />
 
-      {/* Falling water from bottle */}
-      <FallingWaterDrops />
-
-      {/* Water stream from bottle */}
-      <div
-        ref={waterStreamRef}
-        className="absolute left-1/2 top-[35%] w-1 h-[40vh] -translate-x-1/2 origin-top"
-        style={{
-          background: 'linear-gradient(180deg, rgba(159,129,185,0.4) 0%, rgba(159,129,185,0.1) 50%, transparent 100%)',
-          filter: 'blur(2px)',
-          willChange: 'transform',
-        }}
-      />
-
-      {/* 3D Canvas for bottle */}
-      <div
-        ref={bottleContainerRef}
-        className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[600px] z-10"
-        style={{ willChange: 'transform' }}
-      >
-        <Canvas
-          camera={{ position: [0, 0, 3], fov: 45 }}
-          gl={{ antialias: true, alpha: true }}
-          dpr={[1, 2]}
-        >
-          <Suspense fallback={null}>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 5, 5]} intensity={1} />
-            <pointLight position={[-5, 5, 5]} intensity={0.5} color="#9f81b9" />
-            
-            <WaterBottle3D position={[0, -0.2, 0]} scale={2.5} />
-            <FloatingParticles count={40} spread={5} size={0.02} />
-          </Suspense>
-        </Canvas>
-      </div>
 
       {/* Content overlay */}
       <div className="relative z-20 text-center px-4 max-w-5xl mx-auto">

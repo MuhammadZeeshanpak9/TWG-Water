@@ -1,61 +1,19 @@
-import { useRef, useState, Suspense } from 'react';
+import { useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Canvas } from '@react-three/fiber';
 import LiquidBlob from '../components/LiquidBlob';
-import WaterBottle3D from '../components/WaterBottle3D';
-import FloatingParticles from '../components/FloatingParticles';
 import FloatingDroplets from '../components/FloatingDroplets';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function WaterfallEffect() {
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    const streams = containerRef.current?.querySelectorAll('.water-stream');
-    if (!streams) return;
-
-    streams.forEach((stream, i) => {
-      gsap.to(stream, {
-        y: '120vh',
-        duration: 1.5 + Math.random() * 1,
-        repeat: -1,
-        delay: i * 0.15,
-        ease: 'none',
-        force3D: true,
-      });
-    });
-  }, { scope: containerRef });
-
-  return (
-    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: 30 }).map((_, i) => (
-        <div
-          key={i}
-          className="water-stream absolute"
-          style={{
-            left: `${3 + Math.random() * 94}%`,
-            top: '-150px',
-            width: `${2 + Math.random() * 4}px`,
-            height: `${80 + Math.random() * 120}px`,
-            background: `linear-gradient(180deg, transparent, rgba(159,129,185,${0.3 + Math.random() * 0.4}), rgba(255,255,255,${0.4 + Math.random() * 0.4}), transparent)`,
-            filter: 'blur(1px)',
-            willChange: 'transform',
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function FinalCTASection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
-  const bottleRef = useRef<HTMLDivElement>(null);
   const leftBottleRef = useRef<HTMLImageElement>(null);
   const rightBottleRef = useRef<HTMLImageElement>(null);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
@@ -84,12 +42,9 @@ export default function FinalCTASection() {
       }
     });
 
-    // 1. Blob & Bottle
+    // 1. Blob
     tl.fromTo('.cta-blob', { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 1 }, 0);
-    
-    if (bottleRef.current) {
-      tl.fromTo(bottleRef.current, { y: '10vh', opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 1 }, 0.1);
-    }
+
 
     // 2. Text Content
     if (headlineRef.current) {
@@ -104,42 +59,23 @@ export default function FinalCTASection() {
       tl.fromTo(ctaRef.current, { y: 40, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, 0.6);
     }
 
-    // 3. Side bottle animations
+    // 3. Central bottle entrance
     if (leftBottleRef.current) {
-      gsap.fromTo(leftBottleRef.current,
-        { x: '-120%', opacity: 0, rotate: -25 },
-        { 
-          x: '0%', 
-          opacity: 0.25, 
-          rotate: -12, 
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 75%',
-            end: 'top 25%',
-            scrub: 1,
-          }
-        }
+      tl.fromTo(leftBottleRef.current, 
+        { y: '-100vh', opacity: 0, rotate: -30 }, 
+        { y: 0, opacity: 0.2, rotate: -15, duration: 2, ease: 'bounce.out' }, 
+        0.4
+      );
+    }
+    if (rightBottleRef.current) {
+      tl.fromTo(rightBottleRef.current, 
+        { y: '-100vh', opacity: 0, rotate: 30 }, 
+        { y: 0, opacity: 0.2, rotate: 15, duration: 2.2, ease: 'bounce.out' }, 
+        0.5
       );
     }
 
-    if (rightBottleRef.current) {
-      gsap.fromTo(rightBottleRef.current,
-        { x: '120%', opacity: 0, rotate: 25 },
-        { 
-          x: '0%', 
-          opacity: 0.25, 
-          rotate: 12, 
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 75%',
-            end: 'top 25%',
-            scrub: 1,
-          }
-        }
-      );
-    }
+
   }, { scope: sectionRef });
 
   return (
@@ -147,28 +83,30 @@ export default function FinalCTASection() {
       ref={sectionRef}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* 2D Background Bottles (Sides) */}
+      {/* 2D Background Bottles (Central) */}
       <img 
         ref={leftBottleRef}
         src="/bottle.png" 
         alt="" 
-        className="absolute left-[-5%] top-[15%] w-[450px] h-auto pointer-events-none z-0 brightness-110 blur-[1px]"
+        className="absolute left-[25%] top-[10%] w-[550px] sm:w-[620px] h-auto pointer-events-none z-0 brightness-110 opacity-0"
         style={{ willChange: 'transform, opacity' }}
       />
       <img 
         ref={rightBottleRef}
         src="/bottle.png" 
         alt="" 
-        className="absolute right-[-5%] bottom-[5%] w-[400px] h-auto pointer-events-none z-0 brightness-110 blur-[1px] scale-x-[-1]"
+        className="absolute right-[25%] top-[15%] w-[500px] sm:w-[580px] h-auto pointer-events-none z-0 brightness-110 opacity-0 scale-x-[-1]"
         style={{ willChange: 'transform, opacity' }}
       />
+
+    
 
       <div className="cta-blob absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full bg-luxury-purple/25 blur-[150px]" style={{ willChange: 'transform, opacity' }} />
 
       <LiquidBlob className="left-[3%] top-[10%]" size={500} color="rgba(159,129,185,0.35)" delay={0.5} />
       <LiquidBlob className="right-[3%] bottom-[10%]" size={450} color="rgba(195,168,216,0.3)" delay={1.5} />
 
-      <WaterfallEffect />
+
 
       <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 50 }).map((_, i) => (
@@ -192,24 +130,10 @@ export default function FinalCTASection() {
 
       <FloatingDroplets count={35} />
 
-      <div
-        ref={bottleRef}
-        className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-[450px] h-[550px] z-10"
-        style={{ willChange: 'transform, opacity' }}
-      >
-        <Canvas camera={{ position: [0, 0, 3], fov: 45 }} gl={{ antialias: true, alpha: true }} dpr={[1, 2]}>
-          <Suspense fallback={null}>
-            <ambientLight intensity={0.8} />
-            <directionalLight position={[5, 5, 5]} intensity={1.4} />
-            <pointLight position={[-5, 5, 5]} intensity={1} color="#9f81b9" />
-            <pointLight position={[0, -5, 5]} intensity={0.7} color="#c4a8d8" />
-            <WaterBottle3D position={[0, -0.2, 0]} scale={2.3} />
-            <FloatingParticles count={60} spread={7} size={0.03} />
-          </Suspense>
-        </Canvas>
-      </div>
 
-      <div className="relative z-20 text-center px-4 max-w-4xl mx-auto pt-[280px]">
+
+      <div className="relative z-20 text-center px-4 max-w-4xl mx-auto py-20">
+
         <div className="glass-card-strong inline-block px-10 py-8 mb-6" style={{ willChange: 'transform, opacity' }}>
           <h2 ref={headlineRef} className="heading-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
             READY TO
