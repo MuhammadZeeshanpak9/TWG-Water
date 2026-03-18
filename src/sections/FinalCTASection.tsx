@@ -56,6 +56,8 @@ export default function FinalCTASection() {
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLButtonElement>(null);
   const bottleRef = useRef<HTMLDivElement>(null);
+  const leftBottleRef = useRef<HTMLImageElement>(null);
+  const rightBottleRef = useRef<HTMLImageElement>(null);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -101,6 +103,43 @@ export default function FinalCTASection() {
     if (ctaRef.current) {
       tl.fromTo(ctaRef.current, { y: 40, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.7)' }, 0.6);
     }
+
+    // 3. Side bottle animations
+    if (leftBottleRef.current) {
+      gsap.fromTo(leftBottleRef.current,
+        { x: '-120%', opacity: 0, rotate: -25 },
+        { 
+          x: '0%', 
+          opacity: 0.25, 
+          rotate: -12, 
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 75%',
+            end: 'top 25%',
+            scrub: 1,
+          }
+        }
+      );
+    }
+
+    if (rightBottleRef.current) {
+      gsap.fromTo(rightBottleRef.current,
+        { x: '120%', opacity: 0, rotate: 25 },
+        { 
+          x: '0%', 
+          opacity: 0.25, 
+          rotate: 12, 
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 75%',
+            end: 'top 25%',
+            scrub: 1,
+          }
+        }
+      );
+    }
   }, { scope: sectionRef });
 
   return (
@@ -108,6 +147,22 @@ export default function FinalCTASection() {
       ref={sectionRef}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
     >
+      {/* 2D Background Bottles (Sides) */}
+      <img 
+        ref={leftBottleRef}
+        src="/bottle.png" 
+        alt="" 
+        className="absolute left-[-5%] top-[15%] w-[450px] h-auto pointer-events-none z-0 brightness-110 blur-[1px]"
+        style={{ willChange: 'transform, opacity' }}
+      />
+      <img 
+        ref={rightBottleRef}
+        src="/bottle.png" 
+        alt="" 
+        className="absolute right-[-5%] bottom-[5%] w-[400px] h-auto pointer-events-none z-0 brightness-110 blur-[1px] scale-x-[-1]"
+        style={{ willChange: 'transform, opacity' }}
+      />
+
       <div className="cta-blob absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full bg-luxury-purple/25 blur-[150px]" style={{ willChange: 'transform, opacity' }} />
 
       <LiquidBlob className="left-[3%] top-[10%]" size={500} color="rgba(159,129,185,0.35)" delay={0.5} />

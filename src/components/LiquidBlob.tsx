@@ -81,7 +81,7 @@ export default function LiquidBlob({
           height: size,
           background: `radial-gradient(circle at 30% 30%, ${color}, transparent 70%)`,
           borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
-          filter: 'blur(60px)',
+          filter: 'blur(30px)',
           opacity: 0.8,
           willChange: 'transform, border-radius',
         }}

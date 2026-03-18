@@ -43,30 +43,30 @@ export default function ValuePackagesSection() {
       );
     }
 
-    // 2. Cards
-    cardsRef.current.forEach((card) => {
-      if (card) {
-        gsap.fromTo(
-          card,
-          { y: 100, opacity: 0, rotateX: -15, scale: 0.9 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateX: 0,
-            scale: 1,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 90%',
-              end: 'top 60%',
-              scrub: 0.5,
-            },
-            force3D: true,
-          }
-        );
-      }
-    });
+    // 2. Batched Cards Stagger
+    const cards = cardsRef.current.filter(Boolean);
+    if (cards.length > 0) {
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0, rotateX: -15, scale: 0.9 },
+        {
+          y: 0,
+          opacity: 1,
+          rotateX: 0,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            end: 'top 40%',
+            scrub: 0.5,
+          },
+          force3D: true,
+        }
+      );
+    }
   }, { scope: sectionRef });
 
   return (
@@ -102,7 +102,7 @@ export default function ValuePackagesSection() {
                     className="glass-card p-8 group cursor-pointer relative overflow-hidden transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2"
                     style={{ 
                       transformStyle: 'preserve-3d',
-                      boxShadow: `0 18px 50px rgba(0,0,0,0.08), 0 0 30px ${pkg.color}20`,
+                      boxShadow: `0 10px 30px rgba(0,0,0,0.06), 0 0 20px ${pkg.color}15`,
                       willChange: 'transform, opacity'
                     }}
                   >

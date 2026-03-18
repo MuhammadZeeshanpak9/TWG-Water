@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
 // Components
 import LeftNavigation from './components/LeftNavigation';
@@ -22,23 +23,28 @@ gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
-  const [isLoaded, setIsLoaded] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Page load animation
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
+  useGSAP(() => {
+    // 1. Setup global active section tracking
+    const sections = ['home', 'story', 'packages', 'creators', 'contact'];
+    
+    sections.forEach(section => {
+      const element = document.getElementById(section);
+      if (element) {
+        ScrollTrigger.create({
+          trigger: element,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => setActiveSection(section),
+          onEnterBack: () => setActiveSection(section),
+        });
+      }
+    });
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-
-    // Setup global snap for pinned sections
-    const setupGlobalSnap = () => {
+    // 2. Optimization: Setup global snap for pinned sections
+    // We delay this slightly to ensure all child components have registered their ScrollTriggers
+    const snapTimer = setTimeout(() => {
       const pinned = ScrollTrigger.getAll()
         .filter(st => st.vars.pin)
         .sort((a, b) => a.start - b.start);
@@ -74,97 +80,28 @@ function App() {
           ease: 'power2.out',
         },
       });
-    };
+    }, 500);
 
-    // Delay snap setup to ensure all ScrollTriggers are created
-    const snapTimer = setTimeout(setupGlobalSnap, 500);
-
-    return () => {
-      clearTimeout(snapTimer);
-      ScrollTrigger.getAll().forEach(st => st.kill());
-    };
-  }, [isLoaded]);
-
-  // Track active section
-  useEffect(() => {
-    const sections = ['home', 'story', 'packages', 'creators', 'contact'];
-    
-    sections.forEach(section => {
-      const element = document.getElementById(section);
-      if (element) {
-        ScrollTrigger.create({
-          trigger: element,
-          start: 'top center',
-          end: 'bottom center',
-          onEnter: () => setActiveSection(section),
-          onEnterBack: () => setActiveSection(section),
-        });
-      }
-    });
-  }, []);
+    return () => clearTimeout(snapTimer);
+  }, { scope: mainRef });
 
   return (
     <div ref={mainRef} className="relative min-h-screen">
-      {/* Global Water Background - fills as you scroll - ALWAYS VISIBLE */}
       <WaterBackground />
-      
-      {/* Grain overlay - subtle */}
       <div className="grain-overlay" />
-      
-      {/* Left Navigation */}
       <LeftNavigation activeSection={activeSection} />
       
-      {/* Main Content - TRANSPARENT SECTIONS */}
       <main className="relative">
-        {/* Section 1: Hero - pin: true */}
-        <section id="home" className="relative z-10">
-          <HeroSection />
-        </section>
-        
-        {/* Section 2: Welcome - TRANSPARENT */}
-        <section className="relative z-20">
-          <WelcomeSection />
-        </section>
-        
-        {/* Section 3: Value Packages - TRANSPARENT */}
-        <section className="relative z-30">
-          <ValuePackagesSection />
-        </section>
-        
-        {/* Section 4: Why Collaborate - TRANSPARENT */}
-        <section className="relative z-40">
-          <WhyCollaborateSection />
-        </section>
-        
-        {/* Section 5: Our Story Carousel - pin: true */}
-        <section id="story" className="relative z-50">
-          <StoryCarouselSection />
-        </section>
-        
-        {/* Section 6: Creators - TRANSPARENT */}
-        <section id="creators" className="relative z-[60]">
-          <CreatorsSection />
-        </section>
-        
-        {/* Section 7: Collaboration Types - TRANSPARENT */}
-        <section id="packages" className="relative z-[70]">
-          <CollaborationTypesSection />
-        </section>
-        
-        {/* Section 8: Testimonials - TRANSPARENT */}
-        <section className="relative z-[80]">
-          <TestimonialsSection />
-        </section>
-        
-        {/* Section 9: Final CTA - TRANSPARENT */}
-        <section id="contact" className="relative z-[90]">
-          <FinalCTASection />
-        </section>
-        
-        {/* Section 10: Footer */}
-        <section className="relative z-[100]">
-          <FooterSection />
-        </section>
+        <section id="home" className="relative z-10"><HeroSection /></section>
+        <section className="relative z-20"><WelcomeSection /></section>
+        <section className="relative z-30"><ValuePackagesSection /></section>
+        <section className="relative z-40"><WhyCollaborateSection /></section>
+        <section id="story" className="relative z-50"><StoryCarouselSection /></section>
+        <section id="creators" className="relative z-[60]"><CreatorsSection /></section>
+        <section id="packages" className="relative z-[70]"><CollaborationTypesSection /></section>
+        <section className="relative z-[80]"><TestimonialsSection /></section>
+        <section id="contact" className="relative z-[90]"><FinalCTASection /></section>
+        <section className="relative z-[100]"><FooterSection /></section>
       </main>
     </div>
   );

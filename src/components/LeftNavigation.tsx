@@ -59,7 +59,7 @@ export default function LeftNavigation({ activeSection }: LeftNavigationProps) {
       className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:block"
       style={{ willChange: 'transform, opacity' }}
     >
-      <div className="glass-panel rounded-3xl p-3 relative">
+      <div className="glass-panel rounded-3xl p-1.5 relative">
         <div
           ref={indicatorRef}
           className="absolute left-2 right-2 rounded-xl bg-luxury-purple/20 transition-all"
@@ -80,7 +80,7 @@ export default function LeftNavigation({ activeSection }: LeftNavigationProps) {
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 className={`
-                  relative flex items-center gap-3 px-4 py-3 rounded-xl
+                  relative flex items-center px-2 py-3 rounded-xl
                   transition-all duration-300 group
                   ${isActive ? 'text-luxury-purple' : 'text-luxury-gray'}
                   hover:text-luxury-purple
@@ -98,15 +98,15 @@ export default function LeftNavigation({ activeSection }: LeftNavigationProps) {
                 </span>
                 
                 <span className={`
-                  font-body text-sm font-medium whitespace-nowrap
-                  transition-all duration-300
-                  ${isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0'}
+                  font-body text-sm font-medium whitespace-nowrap overflow-hidden
+                  transition-all duration-500 ease-in-out
+                  ${isActive ? 'opacity-100 max-w-xs ml-2' : 'opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-xs group-hover:ml-2'}
                 `}>
                   {item.label}
                 </span>
                 
                 {(isActive || isHovered) && (
-                  <span className="absolute inset-0 rounded-xl bg-luxury-purple/5 blur-md -z-10" />
+                  <span className="absolute inset-0 rounded-xl bg-luxury-purple/5 blur-sm -z-10" />
                 )}
               </button>
             );

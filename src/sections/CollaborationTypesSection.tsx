@@ -13,7 +13,7 @@ const collaborationTypes = [
     icon: Mic2,
     title: 'Sponsorships',
     description: 'Product placement, events, and content integrations.',
-    image: '/collab_01.jpg',
+    image: '/collab_01.png',
   },
   {
     icon: Palette,
@@ -25,7 +25,7 @@ const collaborationTypes = [
     icon: Award,
     title: 'Affiliate & Ambassador',
     description: 'Earn and grow as part of the inner circle.',
-    image: '/collab_03.jpg',
+    image: '/collab_03.png',
   },
 ];
 

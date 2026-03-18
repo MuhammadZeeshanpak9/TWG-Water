@@ -11,7 +11,7 @@ import FloatingDroplets from '../components/FloatingDroplets';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Falling water drops component
+// Falling water drops component - simplified and batched
 function FallingWaterDrops() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -19,29 +19,31 @@ function FallingWaterDrops() {
     const drops = containerRef.current?.querySelectorAll('.water-drop');
     if (!drops) return;
 
-    drops.forEach((drop, i) => {
-      gsap.to(drop, {
-        y: '120vh',
-        duration: 2 + Math.random() * 1.5,
-        repeat: -1,
-        delay: i * 0.3,
-        ease: 'none',
-        force3D: true,
-      });
+    // Use a single stagger animation for all drops
+    gsap.to(drops, {
+      y: '120vh',
+      duration: 1.8,
+      repeat: -1,
+      stagger: {
+        amount: 3,
+        from: "random",
+        repeat: -1
+      },
+      ease: 'none',
+      force3D: true,
     });
   }, { scope: containerRef });
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => ( // Reduced count from 12 to 8
         <div
           key={i}
-          className="water-drop absolute w-2 h-4 rounded-full"
+          className="water-drop absolute w-1.5 h-3 rounded-full"
           style={{
-            left: `${48 + Math.random() * 4}%`,
+            left: `${48.5 + Math.random() * 3}%`,
             top: '-20px',
-            background: 'linear-gradient(180deg, rgba(159,129,185,0.6) 0%, rgba(159,129,185,0.3) 100%)',
-            boxShadow: '0 0 10px rgba(159,129,185,0.5)',
+            background: 'linear-gradient(180deg, rgba(159,129,185,0.4) 0%, rgba(159,129,185,0.2) 100%)',
             willChange: 'transform',
           }}
         />
@@ -57,6 +59,8 @@ export default function HeroSection() {
   const ctaRef = useRef<HTMLButtonElement>(null);
   const bottleContainerRef = useRef<HTMLDivElement>(null);
   const waterStreamRef = useRef<HTMLDivElement>(null);
+  const leftFallingBottleRef = useRef<HTMLImageElement>(null);
+  const rightFallingBottleRef = useRef<HTMLImageElement>(null);
 
   // Use useGSAP for all animations
   useGSAP(() => {
@@ -127,6 +131,18 @@ export default function HeroSection() {
         { scaleY: 0, opacity: 0 },
         { scaleY: 1, opacity: 1, duration: 1, ease: 'power2.out' },
         0.6
+      )
+      .fromTo(
+        leftFallingBottleRef.current,
+        { y: '-120vh', opacity: 0, rotate: -45 },
+        { y: 0, opacity: 0.35, rotate: -15, duration: 2, ease: 'bounce.out' },
+        0.5
+      )
+      .fromTo(
+        rightFallingBottleRef.current,
+        { y: '-120vh', opacity: 0, rotate: 45 },
+        { y: 0, opacity: 0.35, rotate: 15, duration: 2.2, ease: 'bounce.out' },
+        0.6
       );
 
     // 3. Scroll-driven Timeline
@@ -165,6 +181,22 @@ export default function HeroSection() {
       ref={sectionRef}
       className="relative w-full h-screen flex items-center justify-center overflow-hidden"
     >
+      {/* 2D Background Bottles (Falling from above) */}
+      <img 
+        ref={leftFallingBottleRef}
+        src="/bottle.png" 
+        alt="" 
+        className="absolute left-[8%] top-[12%] w-[380px] h-auto pointer-events-none z-0 brightness-110 opacity-0"
+        style={{ translate: '0 0', willChange: 'transform, opacity' }}
+      />
+      <img 
+        ref={rightFallingBottleRef}
+        src="/bottle.png" 
+        alt="" 
+        className="absolute right-[8%] top-[18%] w-[350px] h-auto pointer-events-none z-0 brightness-110 opacity-0 scale-x-[-1]"
+        style={{ translate: '0 0', willChange: 'transform, opacity' }}
+      />
+
       {/* Animated background blobs */}
       <LiquidBlob
         className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -286,7 +318,7 @@ export default function HeroSection() {
       <div className="absolute top-8 left-8 z-30 hidden lg:block">
         <span className="font-display font-bold text-2xl tracking-tight">ELEV8</span>
       </div>
-      <div className="absolute top-8 right-8 z-30 hidden lg:flex items-center gap-8">
+      <div className="absolute top-8 right-8 z-30 hidden lg:flex items-center gap-5">
         {['Home', 'Story', 'Packages', 'Creators', 'Contact'].map((item) => (
           <button
             key={item}

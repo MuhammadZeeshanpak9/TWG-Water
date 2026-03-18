@@ -55,16 +55,19 @@ export default function StoryCarouselSection() {
       );
     }
 
-    // 2. Card Floating Animation
+    // 2. Card Floating Animation (Batched)
     const cards = gsap.utils.toArray<HTMLElement>('.carousel-card');
-    cards.forEach((card, index) => {
-      gsap.to(card, {
-        y: '+=10',
-        duration: 2.5 + index * 0.4,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      });
+    gsap.to(cards, {
+      y: '+=10',
+      duration: 2.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      stagger: {
+        each: 0.4,
+        from: "random"
+      },
+      force3D: true,
     });
 
     // 3. Initial Card Positioning
@@ -88,15 +91,15 @@ export default function StoryCarouselSection() {
       const translateZ = Math.abs(normalizedDiff) * -220;
       const scale = 1 - Math.abs(normalizedDiff) * 0.18;
       const opacity = 1 - Math.abs(normalizedDiff) * 0.4;
-      const blur = Math.abs(normalizedDiff) * 3;
+      const blur = Math.abs(normalizedDiff) * 2; // Reduced from 3 to 2
 
       gsap.to(card, {
         x: translateX,
         z: translateZ,
         rotateY: rotateY,
         scale: scale,
-        opacity: Math.max(opacity, 0.2),
-        filter: `blur(${blur}px)`,
+        opacity: Math.max(opacity, 0.25),
+        filter: blur > 0 ? `blur(${blur}px)` : 'none',
         duration: immediate ? 0 : 0.7,
         ease: 'power2.out',
         overwrite: true,

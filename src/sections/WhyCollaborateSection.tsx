@@ -182,7 +182,7 @@ export default function WhyCollaborateSection() {
               className="absolute left-0 bottom-0 w-[55%] aspect-video rounded-2xl overflow-hidden shadow-xl group"
               style={{ willChange: 'transform, opacity' }}
             >
-              <img src="/why_collaborate_secondary.jpg" alt="Wellness workspace" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/why_collaborate_secondary.png" alt="Wellness workspace" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-luxury-purple/15 mix-blend-multiply" />
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             </div>

@@ -21,31 +21,30 @@ export default function TestimonialsSection() {
   useGSAP(() => {
     if (!sectionRef.current) return;
 
-    // Cards stagger animation
-    cardsRef.current.forEach((card) => {
-      if (card) {
-        gsap.fromTo(
-          card,
-          { y: 80, opacity: 0, rotateX: -15, scale: 0.9 },
-          {
-            y: 0,
-            opacity: 1,
-            rotateX: 0,
-            scale: 1,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              end: 'top 55%',
-              scrub: 0.5,
-              toggleActions: 'play none none reverse',
-            },
-            force3D: true,
-          }
-        );
-      }
-    });
+    // Optimized staggered animation for all testimonial cards
+    const cards = cardsRef.current.filter(Boolean);
+    if (cards.length > 0) {
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0, rotateX: -15, scale: 0.9 },
+        {
+          y: 0,
+          opacity: 1,
+          rotateX: 0,
+          scale: 1,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            end: 'top 40%',
+            scrub: 0.5,
+          },
+          force3D: true,
+        }
+      );
+    }
   }, { scope: sectionRef });
 
   return (

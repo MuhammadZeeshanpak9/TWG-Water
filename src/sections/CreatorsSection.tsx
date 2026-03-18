@@ -12,7 +12,7 @@ const creators = [
   { id: 2, image: '/creator_02.jpg', title: 'Event Partner', size: 'wide' },
   { id: 3, image: '/creator_03.jpg', title: 'Fitness Coach', size: 'tall' },
   { id: 4, image: '/creator_04.jpg', title: 'Yoga Instructor', size: 'wide' },
-  { id: 5, image: '/creator_05.jpg', title: 'Brand Ambassador', size: 'tall' },
+  { id: 5, image: '/creator_05.png', title: 'Brand Ambassador', size: 'tall' },
   { id: 6, image: '/creator_06.jpg', title: 'Creative Team', size: 'wide' },
 ];
 
@@ -23,32 +23,30 @@ export default function CreatorsSection() {
   useGSAP(() => {
     if (!sectionRef.current) return;
 
-    // Grid cards stagger animation using a single ScrollTrigger if possible, 
-    // or optimized individual ones with a cleaner pattern.
-    cardRefs.current.forEach((card, index) => {
-      if (card) {
-        gsap.fromTo(
-          card,
-          { y: 100, opacity: 0, scale: 0.85, rotateX: -10 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            rotateX: 0,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card, // Changed to trigger on specific card for better timing
-              start: 'top 90%',
-              end: 'top 60%',
-              scrub: 0.5,
-              toggleActions: 'play none none reverse',
-            },
-            force3D: true,
-          }
-        );
-      }
-    });
+    // Optimized staggered animation for all creator cards
+    const cards = cardRefs.current.filter(Boolean);
+    if (cards.length > 0) {
+      gsap.fromTo(
+        cards,
+        { y: 60, opacity: 0, scale: 0.9, rotateX: -10 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotateX: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            end: 'top 40%',
+            scrub: 0.5,
+          },
+          force3D: true,
+        }
+      );
+    }
   }, { scope: sectionRef });
 
   return (
