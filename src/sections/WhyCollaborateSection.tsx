@@ -168,7 +168,7 @@ export default function WhyCollaborateSection() {
               className="absolute right-0 top-0 w-[85%] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group"
               style={{ transformStyle: 'preserve-3d', willChange: 'transform, opacity' }}
             >
-              <img src="/why_collaborate_infographic.jpg" alt="Collaboration infographic" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/WHy%20collaborate%20with%20us.jpg" alt="Why collaborate with us" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-luxury-purple/15 mix-blend-multiply" />
               <div className="absolute inset-0 bg-gradient-to-t from-luxury-purple/35 via-transparent to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -182,7 +182,7 @@ export default function WhyCollaborateSection() {
               className="absolute left-0 bottom-0 w-[55%] aspect-video rounded-2xl overflow-hidden shadow-xl group"
               style={{ willChange: 'transform, opacity' }}
             >
-              <img src="/why_collaborate_secondary.png" alt="Wellness workspace" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/why%20collaborate%20second.jpg" alt="Why collaborate second" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-luxury-purple/15 mix-blend-multiply" />
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             </div>

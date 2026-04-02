@@ -126,7 +126,7 @@ export default function WelcomeSection() {
               
               <div className="absolute inset-4 rounded-full overflow-hidden shadow-2xl group-hover:shadow-glow-lg transition-shadow duration-500">
                 <img
-                  src="/welcome_portrait.jpg"
+                  src="/Welcome to our universe.jpg"
                   alt="Wellness lifestyle"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />

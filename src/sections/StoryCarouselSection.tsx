@@ -9,11 +9,21 @@ import FloatingDroplets from '../components/FloatingDroplets';
 gsap.registerPlugin(ScrollTrigger);
 
 const carouselItems = [
-  { id: 1, title: 'Founders', subtitle: 'Visionaries', image: '/carousel_01.jpg' },
-  { id: 2, title: 'Product Team', subtitle: 'Innovators', image: '/carousel_02.jpg' },
-  { id: 3, title: 'Community Leads', subtitle: 'Connectors', image: '/carousel_03.jpg' },
-  { id: 4, title: 'Athlete Partners', subtitle: 'Champions', image: '/carousel_04.jpg' },
-  { id: 5, title: 'Creative Crew', subtitle: 'Artists', image: '/carousel_05.jpg' },
+  { id: 1, title: 'Project One', subtitle: 'Portfolio', image: '/Crousal/1.jpg' },
+  { id: 2, title: 'Project Two', subtitle: 'Portfolio', image: '/Crousal/2.jpg' },
+  { id: 3, title: 'Project Three', subtitle: 'Portfolio', image: '/Crousal/3.jpg' },
+  { id: 4, title: 'Project Four', subtitle: 'Portfolio', image: '/Crousal/4.jpg' },
+  { id: 5, title: 'Project Five', subtitle: 'Portfolio', image: '/Crousal/5.jpg' },
+  { id: 6, title: 'Project Six', subtitle: 'Portfolio', image: '/Crousal/6.jpg' },
+  { id: 7, title: 'Project Seven', subtitle: 'Portfolio', image: '/Crousal/7.jpg' },
+  { id: 8, title: 'Project Eight', subtitle: 'Portfolio', image: '/Crousal/8.jpg' },
+  { id: 9, title: 'Project Nine', subtitle: 'Portfolio', image: '/Crousal/9.jpg' },
+  { id: 10, title: 'Project Ten', subtitle: 'Portfolio', image: '/Crousal/10.jpg' },
+  { id: 11, title: 'Project Eleven', subtitle: 'Portfolio', image: '/Crousal/11.png' },
+  { id: 12, title: 'Project Twelve', subtitle: 'Portfolio', image: '/Crousal/12.jpg' },
+  { id: 13, title: 'Project Thirteen', subtitle: 'Portfolio', image: '/Crousal/13.jpg' },
+  { id: 14, title: 'Project Fourteen', subtitle: 'Portfolio', image: '/Crousal/14.jpg' },
+  { id: 15, title: 'Project Fifteen', subtitle: 'Portfolio', image: '/Crousal/1000072707.jpg' },
 ];
 
 export default function StoryCarouselSection() {
@@ -158,10 +168,7 @@ export default function StoryCarouselSection() {
                   <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-luxury-dark/80 via-luxury-dark/20 to-transparent" />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 pointer-events-none">
-                  <span className="font-mono text-[10px] text-luxury-purple uppercase tracking-widest">{item.subtitle}</span>
-                  <h3 className="font-display font-bold text-xl text-white mt-1">{item.title}</h3>
-                </div>
+                {/* Text overlay removed as requested */}
                 {index === activeIndex && <div className="absolute inset-0 border-2 border-luxury-purple/30 rounded-2xl pointer-events-none" />}
               </div>
             </div>

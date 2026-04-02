@@ -8,11 +8,11 @@ import FloatingDroplets from '../components/FloatingDroplets';
 gsap.registerPlugin(ScrollTrigger);
 
 const creators = [
-  { id: 1, image: '/creator_01.jpg', title: 'Wellness Advocate', size: 'tall' },
-  { id: 2, image: '/creator_02.jpg', title: 'Event Partner', size: 'wide' },
-  { id: 3, image: '/creator_03.jpg', title: 'Fitness Coach', size: 'tall' },
-  { id: 4, image: '/creator_04.jpg', title: 'Yoga Instructor', size: 'wide' },
-  { id: 5, image: '/creator_05.png', title: 'Brand Ambassador', size: 'tall' },
+  { id: 1, image: '/Wellnes%20advocate.jpg', title: 'Wellness Advocate', size: 'tall' },
+  { id: 2, image: '/Event%20partners.jpg', title: 'Event Partner', size: 'wide' },
+  { id: 3, image: '/Fitness%20coach.jpg', title: 'Fitness Coach', size: 'tall' },
+  { id: 4, image: '/yoga%20Instructor.jpg', title: 'Yoga Instructor', size: 'wide' },
+  { id: 5, image: '/Brand%20Ambassadoe.png', title: 'Brand Ambassador', size: 'tall' },
   { id: 6, image: '/creator_06.jpg', title: 'Creative Team', size: 'wide' },
 ];
 
